@@ -130,6 +130,8 @@ export async function POST(req: NextRequest) {
           city: shipping.address.city,
           state: shipping.address.state,
           pagarmeId: pmResult.id,
+          shippingMethod: shipping.method ?? null,
+          shippingPrice: shipping.price ?? 0,
           couponCode: validCouponCode,
           discount: discountAmount,
           items: {
@@ -202,6 +204,8 @@ export async function POST(req: NextRequest) {
         city: shipping.address.city,
         state: shipping.address.state,
         pagarmeId: pmResult.id,
+        shippingMethod: shipping.method ?? null,
+        shippingPrice: shipping.price ?? 0,
         couponCode: validCouponCode,
         discount: discountAmount,
         items: {

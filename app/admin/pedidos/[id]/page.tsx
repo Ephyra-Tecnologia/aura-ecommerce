@@ -18,6 +18,12 @@ interface Order {
   city: string
   state: string
   pagarmeId: string | null
+  source?: string
+  notes?: string | null
+  couponCode?: string | null
+  discount?: number
+  shippingMethod?: string | null
+  shippingPrice?: number
   createdAt: string
   items: {
     id: string
@@ -82,6 +88,9 @@ export default function AdminPedidoDetalhe() {
             Pedido #{order.id.slice(-8).toUpperCase()}
           </h1>
           <span style={{ fontSize: 12, color: 'var(--stone)' }}>{fmtDate(order.createdAt)}</span>
+          {order.source === 'MANUAL' && (
+            <span style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '3px 8px', background: '#fef3e2', color: '#b45309', border: '1px solid #fde68a' }}>📋 Manual</span>
+          )}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
@@ -102,6 +111,30 @@ export default function AdminPedidoDetalhe() {
             </p>
           </div>
         </div>
+
+        {/* Frete & Cupom */}
+        {(order.shippingMethod || order.couponCode) && (
+          <div style={{ display: 'grid', gridTemplateColumns: order.shippingMethod && order.couponCode ? '1fr 1fr' : '1fr', gap: 24, marginBottom: 24 }}>
+            {order.shippingMethod && (
+              <div style={{ background: 'white', border: '1px solid var(--sand)', padding: 24 }}>
+                <h3 style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--stone)', marginBottom: 16 }}>Frete</h3>
+                <p style={{ fontSize: 15, color: 'var(--dark)', margin: '0 0 4px' }}>{order.shippingMethod}</p>
+                <p style={{ fontSize: 13, color: 'var(--stone)', margin: 0 }}>
+                  {order.shippingPrice === 0 ? 'Grátis' : fmt(order.shippingPrice ?? 0)}
+                </p>
+              </div>
+            )}
+            {order.couponCode && (
+              <div style={{ background: 'white', border: '1px solid var(--sand)', padding: 24 }}>
+                <h3 style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--stone)', marginBottom: 16 }}>Cupom</h3>
+                <p style={{ fontSize: 15, color: 'var(--dark)', margin: '0 0 4px', fontFamily: 'monospace', letterSpacing: '0.1em' }}>{order.couponCode}</p>
+                {(order.discount ?? 0) > 0 && (
+                  <p style={{ fontSize: 13, color: '#1e8449', margin: 0 }}>− {fmt(order.discount ?? 0)}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Itens */}
         <div style={{ background: 'white', border: '1px solid var(--sand)', padding: 24, marginBottom: 24 }}>
@@ -127,6 +160,14 @@ export default function AdminPedidoDetalhe() {
             Total: {fmt(order.total)}
           </div>
         </div>
+
+        {/* Observações */}
+        {order.notes && (
+          <div style={{ background: 'white', border: '1px solid var(--sand)', padding: 24, marginBottom: 24 }}>
+            <h3 style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--stone)', marginBottom: 12 }}>Observações</h3>
+            <p style={{ fontSize: 13, color: 'var(--dark)', margin: 0, lineHeight: 1.6 }}>{order.notes}</p>
+          </div>
+        )}
 
         {/* Status */}
         <div style={{ background: 'white', border: '1px solid var(--sand)', padding: 24 }}>
